@@ -1,0 +1,52 @@
+---
+description: 企业定制版功能规划（SSO、管理后台、知识库、技能市场）
+alwaysApply: true
+---
+
+# 企业定制版计划
+
+当前产品是**本机单用户**。`CHERRY_EDITION` 只有 `global` / `cn`，没有租户、组织 SSO、多用户权限或管理后台。企业能力要新增「组织身份 + 策略下发」层。
+
+## 优先级
+
+| 优先级 | 能力 |
+|--------|------|
+| P0 | 企业 SSO + 身份绑定侧边栏/账号详情 |
+| P0 | Admin：组织 Provider / 模型入口下发（密钥与合规出口） |
+| P1 | 知识库组织共享 + ACL（需企业知识服务） |
+| P1 | 企业 Skill/MCP 私有市场 + 安装策略 |
+| P2 | 审计、配额、强制更新、设备管理 |
+
+## 1. 企业 SSO → 左上角姓名 / 账号详情
+
+**现状：** `Sidebar` → `app.user.name` + 头像 → `UserPopup`（本机昵称；可选 Cherry Cloud）。无独立账号页。
+
+**要做：**
+
+- 新建 Enterprise Auth（OIDC/SAML/LDAP），不要硬塞进 Provider/MCP OAuth 或 Cherry Cloud
+- SSO 后写入 displayName / email / avatar / orgId / roles；侧边栏展示企业身份
+- `UserPopup` 升级为个人账号详情（企业字段只读 + 本地偏好）；可选独立 `/settings/account`
+
+## 2. 管理后台统一管 API / 企业模型入口 — 需要
+
+**现状：** Provider 全是本机配置；本机 API Gateway 不是企业控制面。
+
+**要做：** 独立 Admin + Gateway：组织 Provider 目录、密钥托管、模型白名单/配额/审计；客户端登录后拉取 org policy，写入只读托管 Provider。
+
+## 3. 知识库共享与权限 — 需新建
+
+**现状：** 本地单库，无 owner/分享/ACL。
+
+**要做：** visibility + 成员角色；共享库走企业知识服务（勿只靠各端本地 SQLite）；客户端区分「我的 / 共享 / 组织」；Admin 做授权与审计。
+
+## 4. 统一技能管理市场 — 企业私有源
+
+**现状：** 公共 Skills/MCP 市场 + 本机安装，无审批。
+
+**要做：** 企业 Skill Registry、仅允许已批准安装、组织 Agent/Skill/MCP 模板下发；复用现有 `SkillService` / marketplace，换源 + 加策略。
+
+## 架构原则
+
+- `Enterprise Gateway`（鉴权 + 策略 + 模型代理）+ `Admin Web` + 客户端 `enterprise` 构建开关
+- 客户端继续用 Preference / DataApi / IpcApi；新增企业会话与策略同步
+- 企业代码尽量独立目录/模块，便于跟官方 upstream 对齐

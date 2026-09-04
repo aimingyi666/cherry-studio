@@ -1,0 +1,45 @@
+---
+description: 如何把官方 Cherry Studio 更新合进本 fork
+alwaysApply: true
+---
+
+# 官方更新对齐（upstream sync）
+
+本仓库是 fork：`origin` = 我们的仓库，`upstream` = 官方 [CherryHQ/cherry-studio](https://github.com/CherryHQ/cherry-studio)。
+
+## Remote
+
+```bash
+# 若还没有 upstream：
+git remote add upstream https://github.com/CherryHQ/cherry-studio.git
+```
+
+| remote | 用途 |
+|--------|------|
+| `origin` | 我们的 fork，日常 push |
+| `upstream` | 官方仓库，只 fetch / merge，不往官方推 |
+
+## 日常同步（人话）
+
+1. `git fetch upstream --tags` — 拉官方更新
+2. `git merge upstream/main` — 合进当前分支（或按正式版：`git merge v2.0.x`）
+3. 有冲突就改，跑通安装/启动
+4. `git push origin <当前分支>`
+
+企业定制：**优先按官方 release tag 对齐**，不要天天追 `main` tip。
+
+## 有定制时的分支建议
+
+```
+upstream/main → origin/main（尽量只同步官方）
+             → origin/enterprise（SSO、策略、管理后台等）
+             → feature/*
+```
+
+官方更新先合进干净分支，再合进企业分支。
+
+## 合冲突时注意
+
+- **DB migration**：冲突时删掉我们本地那份 `.sql` + snapshot，再 `pnpm db:migrations:generate`，不要手改编号
+- 合完后 `pnpm install`，确认 Node 版本符合 `engines` / `.node-version`
+- 企业改动尽量集中，少散改官方核心文件，降低下次对齐成本

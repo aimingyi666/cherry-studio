@@ -54,6 +54,8 @@ local
 .aider*
 .cursorrules
 .cursor/*
+!.cursor/rules/
+!.cursor/rules/**
 .claude/*
 !.claude/skills/
 !.claude/skills/**
