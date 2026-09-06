@@ -1,52 +1,37 @@
 ---
-description: 企业定制版功能规划（SSO、管理后台、知识库、技能市场）
+description: 沃莱特企业 AI 套件与 Cherry 改造计划（桌面唯一 Cherry；KB 对外 OpenAPI）
 alwaysApply: true
 ---
 
-# 企业定制版计划
+# 企业定制 / 生态套件计划
 
-当前产品是**本机单用户**。`CHERRY_EDITION` 只有 `global` / `cn`，没有租户、组织 SSO、多用户权限或管理后台。企业能力要新增「组织身份 + 策略下发」层。
+## 套件结构（已锁定）
 
-## 优先级
+| 模块 | 仓 | 职责 |
+|------|-----|------|
+| 身份 | WLT-Backend | OIDC、组织、目录、企业模型密钥 |
+| 知识 | WLT-KB | 企业 RAG + ACL；**对外 LLM OpenAPI** |
+| 桌面 | **Cherry（唯一）** | Agent/MCP/本机库；内置 OpenClaw |
+| 分发 | WLT-AppCenter | 企业包 Releases |
+| UI 包 | WLT-ChatUI | 共享组件，非独立产品 |
 
-| 优先级 | 能力 |
-|--------|------|
-| P0 | 企业 SSO + 身份绑定侧边栏/账号详情 |
-| P0 | Admin：组织 Provider / 模型入口下发（密钥与合规出口） |
-| P1 | 知识库组织共享 + ACL（需企业知识服务） |
-| P1 | 企业 Skill/MCP 私有市场 + 安装策略 |
-| P2 | 审计、配额、强制更新、设备管理 |
+**归档：** WLT-ClawX（OpenClaw 用 Cherry Code CLI 内置）。
 
-## 1. 企业 SSO → 左上角姓名 / 账号详情
+不删 Cherry 已有功能；企业能力叠加。WLT 最新代码待上传后校准 API。
 
-**现状：** `Sidebar` → `app.user.name` + 头像 → `UserPopup`（本机昵称；可选 Cherry Cloud）。无独立账号页。
+## 权威文档（本仓）
 
-**要做：**
+- [enterprise-suite.md](../../docs/references/knowledge/enterprise-suite.md)
+- [permission-aware-rag.md](../../docs/references/knowledge/permission-aware-rag.md)
+- [wlt-kb-openapi-for-llm.md](../../docs/references/knowledge/wlt-kb-openapi-for-llm.md)（外部 LLM 直连 KB）
+- [upstream-sync.mdc](./upstream-sync.mdc)
 
-- 新建 Enterprise Auth（OIDC/SAML/LDAP），不要硬塞进 Provider/MCP OAuth 或 Cherry Cloud
-- SSO 后写入 displayName / email / avatar / orgId / roles；侧边栏展示企业身份
-- `UserPopup` 升级为个人账号详情（企业字段只读 + 本地偏好）；可选独立 `/settings/account`
+## 知识对接摘要
 
-## 2. 管理后台统一管 API / 企业模型入口 — 需要
+- 本机库 ↔ 个人；企业库 ↔ KB；共享 = **发布到 KB**。
+- Cherry：登录 → 拉可读企业库 → Router（本地 / KB 检索）→ 答案 + 引用。
+- 第三方 LLM：走 **同一套 WLT-KB OpenAPI**（上传/检索/建库/ACL），禁止上帝 Key。
 
-**现状：** Provider 全是本机配置；本机 API Gateway 不是企业控制面。
+## 分期
 
-**要做：** 独立 Admin + Gateway：组织 Provider 目录、密钥托管、模型白名单/配额/审计；客户端登录后拉取 org policy，写入只读托管 Provider。
-
-## 3. 知识库共享与权限 — 需新建
-
-**现状：** 本地单库，无 owner/分享/ACL。
-
-**要做：** visibility + 成员角色；共享库走企业知识服务（勿只靠各端本地 SQLite）；客户端区分「我的 / 共享 / 组织」；Admin 做授权与审计。
-
-## 4. 统一技能管理市场 — 企业私有源
-
-**现状：** 公共 Skills/MCP 市场 + 本机安装，无审批。
-
-**要做：** 企业 Skill Registry、仅允许已批准安装、组织 Agent/Skill/MCP 模板下发；复用现有 `SkillService` / marketplace，换源 + 加策略。
-
-## 架构原则
-
-- `Enterprise Gateway`（鉴权 + 策略 + 模型代理）+ `Admin Web` + 客户端 `enterprise` 构建开关
-- 客户端继续用 Preference / DataApi / IpcApi；新增企业会话与策略同步
-- 企业代码尽量独立目录/模块，便于跟官方 upstream 对齐
+0 文档 → 1 登录+权限演示 → 2 模型下发+发布到企业+AppCenter → 3 联邦只调 KB → 4 治理
