@@ -168,8 +168,11 @@
 | Document | Description |
 |----------|-------------|
 | [Knowledge Reference](./references/knowledge/README.md) | Entry point for the current Knowledge backend, ingestion workflow, retrieval, and operation guards |
+| [沃莱特企业 AI 生态套件](./references/knowledge/enterprise-suite.md) | 沃莱特企业 AI 生态套件结构（Backend/KB/Cherry/AppCenter）与分期；桌面唯一 Cherry |
 | [Knowledge Service](./references/knowledge/knowledge-service.md) | Current Knowledge backend - persistence, IPC, ingestion, retrieval, Concept IDs, and agent tools |
 | [Knowledge Operation Guards](./references/knowledge/operation-guards.md) | Guard and recovery semantics for Knowledge add, delete, reindex, and embedding-enable operations |
+| [权限感知 RAG 与知识联邦](./references/knowledge/permission-aware-rag.md) | 权限感知 RAG、Cherry 与 WLT-KB 联邦检索、本机发布到企业共享库 |
+| [WLT-KB：供外部 LLM / 业务系统调用的 OpenAPI 契约](./references/knowledge/wlt-kb-openapi-for-llm.md) | WLT-KB 须对外提供的 OpenAPI 能力，供员工自研 LLM/Agent 直连上传、检索与管理知识库（契约；实现在 KB 仓） |
 | [Knowledge Workflow Architecture](./references/knowledge/workflow-architecture.md) | Knowledge workflow architecture: scheduling model, durable JobManager jobs, per-base mutation lock, crash semantics |
 | [Knowledge Storage and Retrieval Implementation](./references/knowledge/experiment/knowledge-technical-design.md) | Current Knowledge storage and retrieval implementation - raw files, per-base index schema, invariants, and migration validation |
 

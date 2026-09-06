@@ -18,3 +18,6 @@ ingestion jobs, renderer IPC, and agent retrieval tools.
 | [Knowledge Operation Guards](./operation-guards.md) | Guard and recovery semantics for `addItems`, `deleteItems`, and `reindexItems` |
 | [Knowledge Workflow Architecture](./workflow-architecture.md) | The workflow model: scheduling, durable JobManager jobs, per-base mutation lock, crash semantics |
 | [Knowledge Storage and Retrieval](./experiment/knowledge-technical-design.md) | Current raw-file layout, per-base index schema, retrieval, and migration validation |
+| [Enterprise AI Suite](./enterprise-suite.md) | Wolaite suite layout (Backend/KB/Cherry/AppCenter); desktop = Cherry only; phasing |
+| [Permission-Aware RAG](./permission-aware-rag.md) | AuthZ-first RAG, Cherry↔WLT-KB federation, publish-local-to-enterprise |
+| [WLT-KB OpenAPI for LLMs](./wlt-kb-openapi-for-llm.md) | Contract: external LLM/Agent HTTP API for full KB ops (upload/search/ACL) |
